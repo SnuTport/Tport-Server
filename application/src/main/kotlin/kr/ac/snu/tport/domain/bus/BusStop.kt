@@ -2,7 +2,6 @@ package kr.ac.snu.tport.domain.bus
 
 import kr.ac.snu.tport.domain.user.User
 
-
 data class BusStop(
     val name: String,
     val busArrivalTime: Int,

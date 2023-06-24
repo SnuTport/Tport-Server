@@ -11,13 +11,13 @@ import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
 @Configuration
-class WebfluxConfiguration: WebFluxConfigurer {
+class WebfluxConfiguration : WebFluxConfigurer {
 
     override fun configureArgumentResolvers(configurer: ArgumentResolverConfigurer) {
         configurer.addCustomResolver(RequestUserArgumentResolver())
     }
 
-    private class RequestUserArgumentResolver: HandlerMethodArgumentResolver {
+    private class RequestUserArgumentResolver : HandlerMethodArgumentResolver {
         override fun supportsParameter(parameter: MethodParameter): Boolean =
             User::class.java.isAssignableFrom(parameter.parameterType)
 

@@ -31,6 +31,7 @@ subprojects {
     dependencyManagement {
         imports {
             mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.2")
+            mavenBom("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.5.2")
         }
     }
 
@@ -50,5 +51,4 @@ subprojects {
     tasks.withType<Test> {
         useJUnitPlatform()
     }
-
 }
