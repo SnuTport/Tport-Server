@@ -20,8 +20,8 @@ class UserRepositoryTest @Autowired constructor(
     fun saveUser(): Unit = runBlocking {
         // when
         val user =
-            userRepository.findByName("someUser") ?:
-            userRepository.save(UserEntity(name = "someUser", password = EncryptedString("somePassword")))
+            userRepository.findByName("someUser")
+                ?: userRepository.save(UserEntity(name = "someUser", password = EncryptedString("somePassword")))
 
         // then
         assertThat(user.password.value).isEqualTo("somePassword")

@@ -26,7 +26,7 @@ class WebfluxConfiguration : WebFluxConfigurer {
             bindingContext: BindingContext,
             exchange: ServerWebExchange
         ): Mono<Any> {
-            return User(1, "test", "test").let { Mono.just(it) } // TODO
+            TODO()
         }
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.data.convert.CustomConversions
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions
 import org.springframework.data.r2dbc.dialect.DialectResolver
 import org.springframework.r2dbc.connection.R2dbcTransactionManager
-import org.springframework.transaction.annotation.EnableTransactionManagement
 
 @Configuration
 class R2dbcConfiguration(

@@ -28,6 +28,10 @@ subprojects {
         plugin("kotlin-spring")
     }
 
+    ktlint {
+        disabledRules.set(setOf("no-wildcard-imports"))
+    }
+
     dependencyManagement {
         imports {
             mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.2")

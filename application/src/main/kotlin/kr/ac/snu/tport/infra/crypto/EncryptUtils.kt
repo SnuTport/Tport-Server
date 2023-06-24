@@ -6,7 +6,7 @@ object EncryptUtils {
     private lateinit var jasyptEncryptor: StringEncryptor
 
     fun setEncryptor(encryptor: StringEncryptor) {
-        this.jasyptEncryptor = encryptor
+        jasyptEncryptor = encryptor
     }
 
     fun encrypt(plainText: String): String {

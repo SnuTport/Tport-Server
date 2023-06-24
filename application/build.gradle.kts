@@ -13,4 +13,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
+
+    /** mockk **/
+    testImplementation("io.mockk:mockk:1.12.0")
 }
