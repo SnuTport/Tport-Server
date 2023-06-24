@@ -18,7 +18,6 @@ data class Bus(
     }
 }
 
-
 data class BusStop(
     val name: String,
     val busArrivalTime: LocalTime,

@@ -32,6 +32,7 @@ class PathServiceTest {
                 busId = 1L,
                 busNum = "관악02",
                 departureTime = LocalTime.of(5, 0),
+                capacity = 10L,
                 busStop = listOf(
                     BusStop(
                         name = "정문",

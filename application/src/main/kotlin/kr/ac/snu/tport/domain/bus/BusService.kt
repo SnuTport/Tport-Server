@@ -27,6 +27,7 @@ class BusServiceImpl(
                 busId = it.id!!,
                 busNum = it.busNum,
                 departureTime = LocalTime.parse(it.departureTime),
+                capacity = it.capacity,
                 busStop = busStopArrivalEntities[it.id]!!
                     .map { busStopArrivalEntity ->
                         BusStop(
