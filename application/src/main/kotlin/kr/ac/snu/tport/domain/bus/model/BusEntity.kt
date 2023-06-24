@@ -12,6 +12,8 @@ data class BusEntity(
     val id: Long? = null,
     @Column("bus_number")
     val busNum: String,
+    @Column("capacity")
+    val capacity: Long,
     @Column("departure_time")
     val departureTime: String
 ) {

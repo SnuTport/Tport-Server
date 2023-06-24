@@ -24,6 +24,7 @@ class PathService(
         val busMap =
             busService.findAll(availablePaths.map { it.busId }.distinct()).associateBy { it.busId }
 
+        // TODO 예약 꽉 차있으면?
         return availablePaths
             .associateWith { busMap[it.busId]!! }
             .toList()

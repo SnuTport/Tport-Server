@@ -7,6 +7,7 @@ interface BusRepository : CoroutineCrudRepository<BusEntity, Long> {
     fun findAllByIdIn(ids: List<Long>): Flow<BusEntity>
 }
 
-interface BusStopArrivalRepository : CoroutineCrudRepository<BusStopArrivalEntity, Long> {
-    fun findAllByBusIdIn(busIds: List<Long>): Flow<BusStopArrivalEntity>
+interface BusStopRepository : CoroutineCrudRepository<BusStopEntity, Long> {
+    fun findAllByBusIdIn(busIds: List<Long>): Flow<BusStopEntity>
+    suspend fun findByBusStopName(name: String): BusStopEntity?
 }
