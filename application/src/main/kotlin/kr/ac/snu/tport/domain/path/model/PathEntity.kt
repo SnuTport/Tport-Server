@@ -7,6 +7,7 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
 @Table("paths")
+@Deprecated("Use PathGroup & SubPath instead")
 data class PathEntity(
     @Id
     @Column("id")
