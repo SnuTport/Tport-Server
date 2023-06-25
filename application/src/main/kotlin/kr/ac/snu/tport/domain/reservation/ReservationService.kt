@@ -11,7 +11,6 @@ import kr.ac.snu.tport.domain.user.User
 import kr.ac.snu.tport.domain.user.UserService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
@@ -30,11 +29,22 @@ class ReservationService(
     suspend fun postReservation(
         user: User,
         busId: Long,
-        busStopName: String
+        busStopName: String,
+        reservationTime: LocalDateTime
     ): Reservation {
+        check(reservationTime.isAfter(LocalDateTime.now())) {
+            "현재 시간보다 늦은 시간에 예약할 수 없습니다."
+        }
+
         val bus = busRepository.findById(busId)!!
         val busStop = busStopRepository.findByBusStopName(busStopName)!! // TODO 에러 메시지 포맷
-        val arrivalTime = LocalDate.now().atTime(LocalTime.parse(busStop.arrivalTime))
+        val arrivalTime = reservationTime
+            .toLocalDate()
+            .atTime(LocalTime.parse(busStop.arrivalTime))
+
+        if (reservationTime.isAfter(arrivalTime)) {
+            throw IllegalStateException("버스 도착 시간보다 늦은 시간에 예약할 수 없습니다.")
+        }
 
         val reservations = reservationRepository.findAllByBusIdAndBusStopName(busId, busStop.busStopName)
         if (reservations.size >= bus.capacity) {

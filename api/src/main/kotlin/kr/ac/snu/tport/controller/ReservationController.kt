@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/v1")
@@ -18,6 +19,7 @@ class ReservationController(
     data class ReservationRequest(
         val busId: Long,
         val getOnBusStop: String,
+        val reservationRequestDatetime: LocalDateTime
     )
 
     @PostMapping("/reservation")
@@ -36,12 +38,18 @@ class ReservationController(
                 required = true,
                 example = "서울대입구역",
             ),
+            io.swagger.v3.oas.annotations.Parameter(
+                name = "reservationRequestDatetime",
+                description = "예약 요청 시간",
+                required = true,
+                example = "2021-06-01T12:00:00",
+            ),
         ]
     )
     suspend fun reserveBus(
         user: User,
         @RequestBody req: ReservationRequest
     ): Reservation {
-        return reservationService.postReservation(user, req.busId, req.getOnBusStop)
+        return reservationService.postReservation(user, req.busId, req.getOnBusStop, req.reservationRequestDatetime)
     }
 }
