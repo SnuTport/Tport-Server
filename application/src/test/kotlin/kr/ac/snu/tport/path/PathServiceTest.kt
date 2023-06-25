@@ -18,7 +18,7 @@ import java.time.LocalTime
 class PathServiceTest {
     private val busMockk = mockk<BusService>()
     private val pathRepoMockk = mockk<PathRepository>()
-    private val sut = PathService(busMockk, pathRepoMockk)
+    private val sut = PathService(pathRepoMockk, busMockk, mockk(relaxed = true))
 
     /**
      * 로직 검증 말고 돌아가는지만 확인함
@@ -37,10 +37,12 @@ class PathServiceTest {
                     BusStop(
                         name = "정문",
                         busArrivalTime = LocalTime.of(13, 0),
+                        forecastedDemand = 0
                     ),
                     BusStop(
                         name = "제2공학관",
                         busArrivalTime = LocalTime.of(13, 10),
+                        forecastedDemand = 0
                     )
                 )
             )

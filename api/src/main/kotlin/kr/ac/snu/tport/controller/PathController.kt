@@ -1,13 +1,13 @@
 package kr.ac.snu.tport.controller
 
 import io.swagger.v3.oas.annotations.Operation
-import kr.ac.snu.tport.domain.path.Path
 import kr.ac.snu.tport.domain.path.PathService
+import kr.ac.snu.tport.domain.path.dto.PathDetail
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/v1")
@@ -17,8 +17,8 @@ class PathController(
     data class SearchRequest(
         val originName: String,
         val destinationName: String,
-        @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-        val departureTime: LocalTime,
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        val departureTime: LocalDateTime?,
     )
 
     @GetMapping("/path/search")
@@ -40,12 +40,13 @@ class PathController(
             io.swagger.v3.oas.annotations.Parameter(
                 name = "departureTime",
                 description = "출발 시간",
-                required = true,
-                example = "10:00",
+                required = false,
+                example = "2021-06-01T12:00:00",
             ),
         ]
     )
-    suspend fun reserveBus(req: SearchRequest): List<Path> {
-        return pathService.search(req.originName, req.destinationName, req.departureTime)
+    suspend fun searchPaths(req: SearchRequest): List<PathDetail> {
+        val departureTime = req.departureTime ?: LocalDateTime.now()
+        return pathService.search(req.originName, req.destinationName, departureTime)
     }
 }
