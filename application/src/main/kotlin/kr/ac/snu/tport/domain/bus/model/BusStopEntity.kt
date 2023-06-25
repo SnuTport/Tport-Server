@@ -17,7 +17,7 @@ data class BusStopEntity(
     @Column("arrival_time")
     val arrivalTime: String,
     @Column("forecasted_demand")
-    val forecastedDemand: String,
+    val forecastedDemand: Int,
 ) {
     init {
         // this throws exception if not valid

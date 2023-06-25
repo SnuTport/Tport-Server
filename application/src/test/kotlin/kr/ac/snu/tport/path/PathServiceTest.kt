@@ -37,10 +37,12 @@ class PathServiceTest {
                     BusStop(
                         name = "정문",
                         busArrivalTime = LocalTime.of(13, 0),
+                        forecastedDemand = 0
                     ),
                     BusStop(
                         name = "제2공학관",
                         busArrivalTime = LocalTime.of(13, 10),
+                        forecastedDemand = 0
                     )
                 )
             )

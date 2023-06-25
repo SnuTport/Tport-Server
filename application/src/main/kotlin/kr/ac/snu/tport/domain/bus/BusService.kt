@@ -18,7 +18,7 @@ class BusServiceImpl(
 
     override suspend fun findAll(busIds: List<Long>): List<Bus> {
         val busEntities = busRepository.findAllByIdIn(busIds).toList()
-        val busStopArrivalEntities = busStopRepository.findAllByBusIdIn(busEntities.mapNotNull { it.id })
+        val busStopEntities = busStopRepository.findAllByBusIdIn(busEntities.mapNotNull { it.id })
             .toList()
             .groupBy { it.busId }
 
@@ -28,11 +28,12 @@ class BusServiceImpl(
                 busNum = it.busNum,
                 departureTime = LocalTime.parse(it.departureTime),
                 capacity = it.capacity,
-                busStop = busStopArrivalEntities[it.id]!!
-                    .map { busStopArrivalEntity ->
+                busStop = busStopEntities[it.id]!!
+                    .map { entity ->
                         BusStop(
-                            name = busStopArrivalEntity.busStopName,
-                            busArrivalTime = LocalTime.parse(busStopArrivalEntity.arrivalTime)
+                            name = entity.busStopName,
+                            busArrivalTime = LocalTime.parse(entity.arrivalTime),
+                            forecastedDemand = entity.forecastedDemand
                         )
                     }
             )

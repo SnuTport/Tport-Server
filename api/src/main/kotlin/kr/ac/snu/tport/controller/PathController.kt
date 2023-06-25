@@ -1,8 +1,8 @@
 package kr.ac.snu.tport.controller
 
 import io.swagger.v3.oas.annotations.Operation
-import kr.ac.snu.tport.domain.path.Path
 import kr.ac.snu.tport.domain.path.PathService
+import kr.ac.snu.tport.domain.path.dto.PathDetail
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -45,7 +45,7 @@ class PathController(
             ),
         ]
     )
-    suspend fun reserveBus(req: SearchRequest): List<Path> {
+    suspend fun searchPaths(req: SearchRequest): List<PathDetail> {
         return pathService.search(req.originName, req.destinationName, req.departureTime)
     }
 }
