@@ -1,5 +1,6 @@
 package kr.ac.snu.tport.controller
 
+import io.swagger.v3.oas.annotations.Operation
 import kr.ac.snu.tport.domain.reservation.Reservation
 import kr.ac.snu.tport.domain.reservation.ReservationService
 import kr.ac.snu.tport.domain.user.User
@@ -20,6 +21,23 @@ class ReservationController(
     )
 
     @PostMapping("/reservation")
+    @Operation(
+        method = "버스 예약 API",
+        parameters = [
+            io.swagger.v3.oas.annotations.Parameter(
+                name = "busId",
+                description = "버스 ID",
+                required = true,
+                example = "1",
+            ),
+            io.swagger.v3.oas.annotations.Parameter(
+                name = "getOnBusStop",
+                description = "탑승 정류장 이름",
+                required = true,
+                example = "서울대입구역",
+            ),
+        ]
+    )
     suspend fun reserveBus(
         user: User,
         @RequestBody req: ReservationRequest
