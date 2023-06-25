@@ -24,7 +24,13 @@ class PathService(
         val paths = searchPaths(originName, destinationName, departureTime)
         val buses = paths.map { it.bus }.distinct()
         val reservationsMap = reservationService.getReservations(buses, departureTime)
-        return paths.map { PathDetailBuilder.build(it, reservationsMap[it.bus].orEmpty()) }
+        return paths.map {
+            PathDetailBuilder.build(
+                it,
+                reservationsMap[it.bus].orEmpty(),
+                departureTime
+            )
+        }
     }
 
     private suspend fun searchPaths(

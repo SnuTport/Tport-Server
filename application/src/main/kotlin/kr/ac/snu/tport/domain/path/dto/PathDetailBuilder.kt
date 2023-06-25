@@ -5,13 +5,16 @@ import kr.ac.snu.tport.domain.bus.BusStop
 import kr.ac.snu.tport.domain.bus.dto.BusStopInDetail
 import kr.ac.snu.tport.domain.path.Path
 import kr.ac.snu.tport.domain.reservation.dto.UserReservation
+import java.time.LocalDateTime
+import kotlin.math.min
 import kotlin.random.Random
 
 object PathDetailBuilder {
 
     fun build(
         path: Path,
-        reservations: List<UserReservation>
+        reservations: List<UserReservation>,
+        departureTime: LocalDateTime
     ): PathDetail {
         return PathDetail(
             id = path.id,
@@ -19,19 +22,36 @@ object PathDetailBuilder {
             getOffBusStop = path.getOffBusStop,
             fare = path.fare,
             travelTime = path.travelTime,
-            bus = buildBusDetail(path.bus, reservations)
+            bus = buildBusDetail(path.bus, reservations, departureTime)
         )
     }
 
-    private fun buildBusDetail(bus: Bus, reservations: List<UserReservation>): BusDetail {
+    private fun buildBusDetail(
+        bus: Bus,
+        reservations: List<UserReservation>,
+        departureTime: LocalDateTime
+    ): BusDetail {
         val reservationMap = reservations
             .groupBy { it.reservation.busStopName }
 
         val busCapacity = bus.capacity
         val totalReservationCount = reservations.size
         val remainingCapacity = busCapacity - totalReservationCount
-        val busStopsInDetail = randomlyDistribute(remainingCapacity, bus.busStop).map { (busStop, simulatedRealCount) ->
-            buildBusStopInDetail(busStop, busCapacity, simulatedRealCount, reservationMap[busStop.name] ?: emptyList())
+        val busStopsWithSimulationValues = randomlyDistribute(
+            remainingCapacity,
+            bus.busStop,
+            departureTime,
+        )
+
+        var actualDataRightBefore: BusStopInDetail.ActualBusStopData? = null
+        val busStopsInDetail = busStopsWithSimulationValues.map { (busStop, simulatedRealCount) ->
+            buildBusStopInDetail(
+                busStop,
+                busCapacity.toInt(),
+                simulatedRealCount,
+                reservationMap[busStop.name].orEmpty(),
+                actualDataRightBefore
+            ).also { actualDataRightBefore = it.actualBusStopData }
         }
 
         return BusDetail(
@@ -49,12 +69,22 @@ object PathDetailBuilder {
      */
     private fun randomlyDistribute(
         remainingCapacity: Long,
-        busStops: List<BusStop>
+        busStops: List<BusStop>,
+        departureTime: LocalDateTime
     ): Map<BusStop, Int> {
         var remainingCapacitySum = remainingCapacity
         val countMap = busStops.associateWith { 0 }.toMutableMap()
         countMap.keys.shuffled().forEach { randomKey ->
-            val randomValue = Random.nextInt(remainingCapacitySum.toInt())
+            val busStopClosestArrivalTime = departureTime.toLocalDate().atTime(randomKey.busArrivalTime)
+            if (busStopClosestArrivalTime.isAfter(LocalDateTime.now())) {
+                // 버스의 도착 시간이 조회 시점 이후라면,
+                // 실제 탑승자가 존재할 수 없으므로, 빈자리 수를 더해주지 않는다.
+                return@forEach
+            }
+
+            // 좀 더 그럴 듯한 데이터를 위해 실제 값이 예측값의 2배를 넘지 않도록 조정
+            val upperLimit = min(remainingCapacitySum.toInt(), randomKey.forecastedDemand * 2)
+            val randomValue = Random.nextInt(upperLimit)
             countMap[randomKey] = countMap[randomKey]!! + randomValue
             remainingCapacitySum -= randomValue
         }
@@ -64,26 +94,29 @@ object PathDetailBuilder {
 
     private fun buildBusStopInDetail(
         busStop: BusStop,
-        busCapacity: Long,
+        busCapacity: Int,
         simulatedRealCount: Int, // 실제 비예약 탑승자 수를 시뮬레이션 한 값
-        reservations: List<UserReservation>
+        reservations: List<UserReservation>,
+        actualDataRightBefore: BusStopInDetail.ActualBusStopData?
     ): BusStopInDetail {
-        val reservationCount = reservations.size // 예약자 수
+        val realEmptyNumRightBefore = actualDataRightBefore?.emptyNum ?: busCapacity // 직전 실제 빈자리 수
         val forecastingDemand = busStop.forecastedDemand // 예측 수요
-        val forecastedEmptyCount = busCapacity - forecastingDemand // 예측 빈자리 수
-        val realEmptyCount = forecastedEmptyCount - simulatedRealCount // 실제 빈자리 수를 시뮬레이션 한 값
+        val forecastedEmptyCount = realEmptyNumRightBefore - forecastingDemand // 이번의 예측 빈자리 수
+        val realEmptyCount = realEmptyNumRightBefore - simulatedRealCount // 이번의 실제 빈자리 수를 시뮬레이션 한 값
+
+        val reservationCount = reservations.size // 예약자 수
 
         val forecastingBusStopData = BusStopInDetail.ForecastingBusStopData(
             demand = forecastingDemand, // 에측 수요
-            emptyNum = forecastedEmptyCount.toInt(), // 예측 빈자리 수
+            emptyNum = forecastedEmptyCount, // 예측 빈자리 수
             unreservedNum = (forecastingDemand - reservationCount), // 예측 비예약 탑승자 수
             reservedNum = reservationCount, // 예약자 수
             reservationList = reservations.map { it.user }
         )
 
         val actualBusStopData = BusStopInDetail.ActualBusStopData(
-            demand = forecastingDemand + simulatedRealCount, // 실제 수요
-            emptyNum = realEmptyCount.toInt(), // 실제 빈자리 수를 시뮬레이션 한 값
+            demand = reservationCount + simulatedRealCount, // 실제 수요
+            emptyNum = realEmptyCount, // 실제 빈자리 수를 시뮬레이션 한 값
             unreservedNum = simulatedRealCount, // 실제 비예약 탑승자 수를 시뮬레이션 한 값
             reservedNum = reservationCount, // 예약자 수
             reservationList = reservations.map { it.user }
@@ -96,5 +129,4 @@ object PathDetailBuilder {
             actualBusStopData = actualBusStopData
         )
     }
-
 }

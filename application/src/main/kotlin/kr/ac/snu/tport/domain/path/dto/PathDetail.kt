@@ -1,7 +1,5 @@
 package kr.ac.snu.tport.domain.path.dto
 
-import kr.ac.snu.tport.domain.bus.Bus
-import kr.ac.snu.tport.domain.bus.BusStop
 import kr.ac.snu.tport.domain.bus.dto.BusStopInDetail
 import java.time.LocalTime
 
