@@ -48,6 +48,7 @@ class PathServiceTest {
 
         coEvery { pathRepoMockk.findAllByGetOnBusStopAndGetOffBusStop(any(), any()) } returns (1..20).map {
             PathEntity(
+                id = 1L,
                 busId = 1L,
                 getOnBusStop = "정문",
                 getOffBusStop = "제2공학관",
