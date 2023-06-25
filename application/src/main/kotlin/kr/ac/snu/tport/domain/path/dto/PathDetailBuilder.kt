@@ -84,7 +84,7 @@ object PathDetailBuilder {
 
             // 좀 더 그럴 듯한 데이터를 위해 실제 값이 예측값의 2배를 넘지 않도록 조정
             val upperLimit = min(remainingCapacitySum.toInt(), randomKey.forecastedDemand * 2)
-            val randomValue = Random.nextInt(upperLimit)
+            val randomValue = if (upperLimit <= 0L) 0 else Random.nextInt(0, upperLimit)
             countMap[randomKey] = countMap[randomKey]!! + randomValue
             remainingCapacitySum -= randomValue
         }

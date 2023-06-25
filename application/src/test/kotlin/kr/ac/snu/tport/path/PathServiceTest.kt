@@ -13,6 +13,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import java.time.LocalTime
 
 class PathServiceTest {
@@ -63,7 +64,7 @@ class PathServiceTest {
         val result = sut.search(
             "정문",
             "제2공학관",
-            LocalTime.of(12, 0)
+            LocalDate.now().atTime(12, 0)
         )
 
         // then

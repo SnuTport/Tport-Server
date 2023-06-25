@@ -1,0 +1,25 @@
+### 0. Health check
+GET {{host}}/api/v1/health
+
+### 1. Sign Up or Log In
+POST {{host}}/api/v1/login
+Content-Type: application/json
+
+{
+  "name": "강지혁",
+  "password": "1234"
+}
+
+### 2. Get all paths
+GET {{host}}/api/v1/path/search?originName=서울대입구역&destinationName=관악구청&departureTime=2022-12-01T00:00:00
+
+### 3. Reserve Bus
+POST {{host}}/api/v1/reservation
+Content-Type: application/json
+Authorization: Bearer eY75SNb7UXnJg71uv/jh0m12zZvLursf0OCDjQkWQDbJ9aohCS01eURouTRcUqE5R+UZxwNw25ia4rd1nrzJSw==
+
+{
+  "busId": 1,
+  "getOnBusStop": "서울대입구역",
+  "reservationRequestDatetime": "2023-06-26T16:49:00"
+}
