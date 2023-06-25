@@ -1,0 +1,10 @@
+jasypt:
+  encryptor:
+    # FIXME set secret password
+    password: TEMP_SECRET
+
+spring:
+  r2dbc:
+    url: r2dbc:mysql://127.0.0.1:3306/tport
+    username: root
+    password:
