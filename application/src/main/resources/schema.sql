@@ -3,6 +3,8 @@ create table if not exists users
     id       bigint       not null auto_increment,
     name     varchar(255) not null,
     password varchar(255) not null,
+    reg_ts           timestamp default CURRENT_TIMESTAMP not null comment '생성시각',
+    upd_ts           timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '수정시각',
     primary key (id),
     unique (name)
 );
@@ -31,10 +33,23 @@ create table if not exists buses
 
 create table if not exists bus_bus_stops
 (
-    id          bigint       not null auto_increment,
+    id          bigint       not null auto_increment primary key ,
     bus_id     bigint       not null,
     bus_stop_name varchar(255) not null,
     arrival_time varchar(20) not null,
     forecasted_demand bigint not null,
+    unique (bus_id, bus_stop_name)
+);
+
+create table if not exists reservations
+(
+    id          bigint       not null auto_increment primary key ,
+    user_id     bigint       not null,
+    bus_id     bigint       not null,
+    bus_stop_name varchar(255) not null,
+    reservation_time datetime(6) not null,
+    seat_no varchar(20) not null,
+    reg_ts           timestamp default CURRENT_TIMESTAMP not null comment '생성시각',
+    upd_ts           timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '수정시각',
     unique (bus_id, bus_stop_name)
 );

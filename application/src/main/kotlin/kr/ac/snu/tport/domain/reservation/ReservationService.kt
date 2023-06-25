@@ -12,7 +12,9 @@ import kr.ac.snu.tport.domain.user.UserService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 
 @Component
 class ReservationService(
@@ -55,9 +57,18 @@ class ReservationService(
             }
     }
 
-    suspend fun getReservations(buses: List<Bus>): Map<Bus, List<UserReservation>> {
+    suspend fun getReservations(buses: List<Bus>, departureTime: LocalDateTime): Map<Bus, List<UserReservation>> {
         val busMap = buses.associateBy { it.busId }
-        val reservations = reservationRepository.findAllByBusIdIn(busMap.keys.toList())
+
+        /**
+         * NOTE : 아침 출근 시간대에 대한 데이터만 존재해서, 예약 시간의 검색 범위가 하루 이상 걸칠 필요는 없음
+         */
+        val reservations = reservationRepository.findAllByBusIdInAndReservationTimeBetween(
+            busIds = busMap.keys.toList(),
+            from = departureTime,
+            to = departureTime.plusDays(1L).truncatedTo(ChronoUnit.DAYS)
+        )
+
         val users = userService.findAll(reservations.map { it.userId }.distinct())
             .toList()
             .associateBy { it.id }

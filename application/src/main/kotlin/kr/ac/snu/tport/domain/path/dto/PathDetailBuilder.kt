@@ -39,8 +39,8 @@ object PathDetailBuilder {
         val busCapacity = bus.capacity
 
         return OnOffBusStopDetail(
-            onBusStop = buildBusStopDetail(onBusStop, busCapacity, reservationMap[onBusStop.name]!!),
-            offBusStop = buildBusStopDetail(offBusStop, busCapacity, reservationMap[offBusStop.name]!!)
+            onBusStop = buildBusStopDetail(onBusStop, busCapacity, reservationMap[onBusStop.name].orEmpty()),
+            offBusStop = buildBusStopDetail(offBusStop, busCapacity, reservationMap[offBusStop.name].orEmpty())
         )
     }
 

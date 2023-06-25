@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/v1")
@@ -17,8 +17,8 @@ class PathController(
     data class SearchRequest(
         val originName: String,
         val destinationName: String,
-        @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-        val departureTime: LocalTime,
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        val departureTime: LocalDateTime?,
     )
 
     @GetMapping("/path/search")
@@ -40,12 +40,13 @@ class PathController(
             io.swagger.v3.oas.annotations.Parameter(
                 name = "departureTime",
                 description = "출발 시간",
-                required = true,
-                example = "10:00",
+                required = false,
+                example = "2021-06-01T12:00:00",
             ),
         ]
     )
     suspend fun searchPaths(req: SearchRequest): List<PathDetail> {
-        return pathService.search(req.originName, req.destinationName, req.departureTime)
+        val departureTime = req.departureTime ?: LocalDateTime.now()
+        return pathService.search(req.originName, req.destinationName, departureTime)
     }
 }

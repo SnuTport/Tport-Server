@@ -18,7 +18,7 @@ import java.time.LocalTime
 class PathServiceTest {
     private val busMockk = mockk<BusService>()
     private val pathRepoMockk = mockk<PathRepository>()
-    private val sut = PathService(busMockk, pathRepoMockk)
+    private val sut = PathService(pathRepoMockk, busMockk, mockk(relaxed = true))
 
     /**
      * 로직 검증 말고 돌아가는지만 확인함
