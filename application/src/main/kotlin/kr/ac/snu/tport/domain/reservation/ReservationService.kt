@@ -39,7 +39,7 @@ class ReservationService(
         reservationTime: LocalDateTime
     ): Reservation = executeWithLocalLock(busId, busStopName) {
         check(reservationTime.isAfter(LocalDateTime.now())) {
-            "현재 시간보다 늦은 시간에 예약할 수 없습니다."
+            "현재 시간보다 이전 시간에 예약할 수 없습니다."
         }
 
         val bus = busRepository.findById(busId)!!
