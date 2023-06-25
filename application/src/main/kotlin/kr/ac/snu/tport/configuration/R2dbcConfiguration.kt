@@ -32,14 +32,4 @@ class R2dbcConfiguration(
     @Bean
     fun transactionManager() =
         R2dbcTransactionManager(connectionFactory)
-
-    @Bean
-    fun initializer(): ConnectionFactoryInitializer? {
-        val initializer = ConnectionFactoryInitializer()
-        initializer.setConnectionFactory(connectionFactory)
-        val populator = CompositeDatabasePopulator()
-        populator.addPopulators(ResourceDatabasePopulator(ClassPathResource("schema.sql")))
-        initializer.setDatabasePopulator(populator)
-        return initializer
-    }
 }

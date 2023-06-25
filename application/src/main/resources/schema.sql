@@ -16,7 +16,7 @@ create table if not exists paths
     get_on_bus_stop varchar(255) not null,
     get_off_bus_stop varchar(255) not null,
     fare        bigint not null ,
-    travel_time bigint not null,
+    travel_time_minutes bigint not null,
     primary key (id),
     unique (get_on_bus_stop, get_off_bus_stop, bus_id)
 );

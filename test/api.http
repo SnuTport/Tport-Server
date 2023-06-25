@@ -16,7 +16,7 @@ GET {{host}}/api/v1/path/search?originName=서울대입구역&destinationName=�
 ### 3. Reserve Bus
 POST {{host}}/api/v1/reservation
 Content-Type: application/json
-Authorization: Bearer eY75SNb7UXnJg71uv/jh0m12zZvLursf0OCDjQkWQDbJ9aohCS01eURouTRcUqE5R+UZxwNw25ia4rd1nrzJSw==
+Authorization: Bearer --
 
 {
   "busId": 1,
