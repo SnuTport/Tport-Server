@@ -1,6 +1,9 @@
 package kr.ac.snu.tport.domain.reservation
 
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeout
 import kr.ac.snu.tport.domain.bus.Bus
 import kr.ac.snu.tport.domain.bus.model.BusRepository
 import kr.ac.snu.tport.domain.bus.model.BusStopRepository
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.ConcurrentHashMap
 
 @Component
 class ReservationService(
@@ -22,16 +26,18 @@ class ReservationService(
     private val reservationRepository: ReservationRepository,
     private val userService: UserService
 ) {
-    /**
-     * TODO API LOCK 필요함 ~~
-     */
+    private val localLockManagementHashMap = ConcurrentHashMap<Int, Mutex>(100).also {
+        it.forEachKey(100) { key -> it[key] = Mutex() }
+    }
+
+    // todo @Transactional 되는지 테스트
     @Transactional
     suspend fun postReservation(
         user: User,
         busId: Long,
         busStopName: String,
         reservationTime: LocalDateTime
-    ): Reservation {
+    ): Reservation = executeWithLocalLock(busId, busStopName) {
         check(reservationTime.isAfter(LocalDateTime.now())) {
             "현재 시간보다 늦은 시간에 예약할 수 없습니다."
         }
@@ -60,11 +66,9 @@ class ReservationService(
             reservationTime = arrivalTime
         )
 
-        return reservationRepository
+        reservationRepository
             .save(reservation)
-            .let {
-                Reservation(it.userId, busId, bus.busNum, busStop.busStopName, seatNum, arrivalTime)
-            }
+            .let { Reservation(it.userId, busId, bus.busNum, busStop.busStopName, seatNum, arrivalTime) }
     }
 
     suspend fun getReservations(buses: List<Bus>, departureTime: LocalDateTime): Map<Bus, List<UserReservation>> {
@@ -91,5 +95,19 @@ class ReservationService(
                 )
             }
             .groupBy { busMap[it.reservation.busId]!! }
+    }
+
+    private suspend fun <T> executeWithLocalLock(
+        busId: Long,
+        busStopName: String,
+        lambda: suspend () -> T
+    ): T {
+        val key = ("$busId-$busStopName").hashCode() % 100
+        val mutex = localLockManagementHashMap[key] ?: return lambda.invoke()
+        return try {
+            withTimeout(3000) { mutex.withLock { lambda() } }
+        } catch (e: Exception) {
+            throw IllegalStateException("예약에 실패했습니다. 잠시 후 다시 시도해주세요.")
+        }
     }
 }
