@@ -1,3 +1,7 @@
+plugins {
+    id("org.springframework.boot") version "3.1.1"
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation(project(":application"))
