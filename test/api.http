@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ### 2. Get all paths
-GET {{host}}/api/v1/path/search?originName=서울대입구역&destinationName=관악구청&departureTime=2022-12-01T00:00:00
+GET {{host}}/api/v1/path/search?originName=송도해경&destinationName=강남역&departureTime=2022-12-01T00:00:00
 
 ### 3. Reserve Bus
 POST {{host}}/api/v1/reservation
