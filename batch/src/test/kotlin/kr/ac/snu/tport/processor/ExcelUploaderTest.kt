@@ -1,6 +1,5 @@
 package kr.ac.snu.tport.processor
 
-import kr.ac.snu.tport.job.ExcelDatabaseUploadBatchJob
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,5 +14,4 @@ class ExcelUploaderTest @Autowired constructor(
     fun `test`() {
         uploader.execute()
     }
-
 }

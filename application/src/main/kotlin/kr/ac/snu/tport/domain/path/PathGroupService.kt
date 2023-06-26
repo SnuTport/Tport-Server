@@ -35,7 +35,8 @@ class PathGroupService(
             getOnBusStop = getOnBusStop,
             getOffBusStop = getOffBusStop,
             fare = fare,
-            travelTime = travelTime
+            travelTime = travelTime,
+            startTime = "$startTime"
         )
     }
 
