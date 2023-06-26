@@ -3,26 +3,31 @@ package kr.ac.snu.tport.domain.path.dto
 import kr.ac.snu.tport.domain.bus.Bus
 import kr.ac.snu.tport.domain.bus.BusStop
 import kr.ac.snu.tport.domain.bus.dto.BusStopInDetail
-import kr.ac.snu.tport.domain.path.Path
+import kr.ac.snu.tport.domain.path.PathGroup
 import kr.ac.snu.tport.domain.reservation.dto.UserReservation
 import java.time.LocalDateTime
 import kotlin.math.min
 import kotlin.random.Random
 
-object PathDetailBuilder {
+object PathGroupDetailBuilder {
 
     fun build(
-        path: Path,
+        path: PathGroup,
+        metroSubPath: PathGroup.SubPaths,
+        metroSubPathBus: Bus,
         reservations: List<UserReservation>,
         departureTime: LocalDateTime
-    ): PathDetail {
-        return PathDetail(
-            id = path.id,
+    ): PathGroupDetail {
+        return PathGroupDetail(
+            id = path.id!!,
             getOnBusStop = path.getOnBusStop,
             getOffBusStop = path.getOffBusStop,
             fare = path.fare,
             travelTime = path.travelTime,
-            bus = buildBusDetail(path.bus, reservations, departureTime)
+            departureTime = path.startTime,
+            subPaths = path.subPaths,
+            metroSubPath = metroSubPath,
+            metroBusDetail = buildBusDetail(metroSubPathBus, reservations, departureTime)
         )
     }
 

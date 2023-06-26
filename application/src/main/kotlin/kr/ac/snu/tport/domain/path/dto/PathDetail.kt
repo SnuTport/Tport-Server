@@ -1,15 +1,18 @@
 package kr.ac.snu.tport.domain.path.dto
 
 import kr.ac.snu.tport.domain.bus.dto.BusStopInDetail
+import kr.ac.snu.tport.domain.path.PathGroup
 import java.time.LocalTime
-
-data class PathDetail(
+data class PathGroupDetail(
     val id: Long,
     val getOnBusStop: String,
     val getOffBusStop: String,
-    val bus: BusDetail,
+    val departureTime: LocalTime,
     val fare: Int,
-    val travelTime: Int
+    val travelTime: Int,
+    val subPaths: List<PathGroup.SubPaths>,
+    val metroSubPath: PathGroup.SubPaths,
+    val metroBusDetail: BusDetail
 )
 
 data class BusDetail(

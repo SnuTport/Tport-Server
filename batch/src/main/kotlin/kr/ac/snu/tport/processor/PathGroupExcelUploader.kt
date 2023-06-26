@@ -22,7 +22,6 @@ class PathGroupExcelUploader {
         return buildPathGroups(rowIterator).also { workbook.close() }
     }
 
-
     // TODO : make this function to build PathGroup List
     private fun buildPathGroups(rowIterator: Iterator<Row>): List<PathGroup> {
 
@@ -39,5 +38,4 @@ class PathGroupExcelUploader {
 
         TODO()
     }
-
 }

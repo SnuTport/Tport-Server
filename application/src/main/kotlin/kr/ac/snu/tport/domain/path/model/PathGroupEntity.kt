@@ -13,6 +13,8 @@ data class PathGroupEntity(
     val getOnBusStop: String,
     @Column("get_off_bus_stop")
     val getOffBusStop: String,
+    @Column("start_time")
+    val startTime: String,
     @Column("fare")
     val fare: Int,
     @Column("travel_time_minutes")
