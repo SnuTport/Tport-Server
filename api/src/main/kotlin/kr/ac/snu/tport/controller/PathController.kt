@@ -5,7 +5,9 @@ import kr.ac.snu.tport.domain.path.PathService
 import kr.ac.snu.tport.domain.path.dto.PathGroupDetail
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
@@ -48,5 +50,13 @@ class PathController(
     suspend fun searchPaths(req: SearchRequest): List<PathGroupDetail> {
         val departureTime = req.departureTime ?: LocalDateTime.now()
         return pathService.search(req.originName, req.destinationName, departureTime)
+    }
+
+    @GetMapping("/path/{pathGroupId}")
+    suspend fun searchPath(
+        @PathVariable pathGroupId: Long,
+        @RequestParam departureTime: LocalDateTime?
+    ): PathGroupDetail {
+        return pathService.search(pathGroupId, departureTime ?: LocalDateTime.now())
     }
 }

@@ -23,6 +23,23 @@ class PathService(
     private val busService: BusService,
     private val reservationService: ReservationService
 ) {
+    suspend fun search(pathGroupId: Long, departureTime: LocalDateTime): PathGroupDetail {
+        val pathGroup = pathGroupRepository.findById(pathGroupId)!!
+        val subPaths = subPathsRepository.findAllByPathGroupIdIn(pathGroupIds = listOf(pathGroup.id!!))
+        val bus = busService.findAll(subPaths.mapNotNull { it.busId }).distinct().associateBy { it.busId }
+
+        val pathGroupDomain = pathGroup.toDomain(subPaths.associateWith { bus[it.busId] })
+        val metroSubPath = pathGroupDomain.subPaths.first { it.vehicle is Bus }
+        val metroSubPathBus = metroSubPath.vehicle as Bus
+        val reservationsMap = reservationService.getReservations(listOf(metroSubPathBus), departureTime)
+
+        return PathGroupDetailBuilder.build(
+            pathGroupDomain,
+            metroSubPath, metroSubPathBus,
+            reservationsMap[metroSubPathBus].orEmpty(),
+            departureTime
+        )
+    }
 
     suspend fun search(
         originName: String,
