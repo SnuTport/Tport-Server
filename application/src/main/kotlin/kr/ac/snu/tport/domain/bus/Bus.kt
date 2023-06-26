@@ -19,7 +19,7 @@ data class Bus(
         return dict[busStop]?.busArrivalTime
     }
 
-    override fun typeName(): String {
+    override fun getType(): String {
         return Vehicle.Type.M_BUS.name
     }
 }
