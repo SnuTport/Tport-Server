@@ -15,6 +15,8 @@ data class SubPathsEntity(
     val getOffBusStop: String,
     @Column("path_group_id")
     val pathGroupId: Long?,
+    @Column("travel_time")
+    val travelTime: Int,
     @Column("bus_id")
     val busId: Long?,
     @Column("type")
