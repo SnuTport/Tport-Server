@@ -46,6 +46,7 @@ class PathGroupService(
                 getOffBusStop = it.getOffBusStop,
                 busId = (it.vehicle as? Bus)?.busId,
                 pathGroupId = id,
+                travelTime = it.travelTime,
                 type = it.vehicle.typeName()
             )
         }.toSet()

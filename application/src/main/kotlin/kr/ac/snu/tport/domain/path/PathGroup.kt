@@ -13,6 +13,7 @@ data class PathGroup(
     data class SubPaths(
         val getOnBusStop: String,
         val getOffBusStop: String,
+        val travelTime: Int,
         val vehicle: Vehicle
     )
 }
