@@ -6,5 +6,5 @@ jasypt:
 spring:
   r2dbc:
     url: ${DATABASE_URL}
-    username: root
-    password:
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
