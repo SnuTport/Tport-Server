@@ -49,14 +49,19 @@ object PathGroupDetailBuilder {
         )
 
         var actualDataRightBefore: BusStopInDetail.ActualBusStopData? = null
+        var forecastingBusStopDataRightBefore: BusStopInDetail.ForecastingBusStopData? = null
         val busStopsInDetail = busStopsWithSimulationValues.map { (busStop, simulatedRealCount) ->
             buildBusStopInDetail(
                 busStop,
                 busCapacity.toInt(),
                 simulatedRealCount,
                 reservationMap[busStop.name].orEmpty(),
-                actualDataRightBefore
-            ).also { actualDataRightBefore = it.actualBusStopData }
+                actualDataRightBefore,
+                forecastingBusStopDataRightBefore
+            ).also {
+                actualDataRightBefore = it.actualBusStopData
+                forecastingBusStopDataRightBefore = it.forecastingBusStopData
+            }
         }
 
         return BusDetail(
@@ -102,9 +107,12 @@ object PathGroupDetailBuilder {
         busCapacity: Int,
         simulatedRealCount: Int, // 실제 비예약 탑승자 수를 시뮬레이션 한 값
         reservations: List<UserReservation>,
-        actualDataRightBefore: BusStopInDetail.ActualBusStopData?
+        actualDataRightBefore: BusStopInDetail.ActualBusStopData?,
+        forecastingBusStopDataRightBefore: BusStopInDetail.ForecastingBusStopData?,
     ): BusStopInDetail {
-        val realEmptyNumRightBefore = actualDataRightBefore?.emptyNum ?: busCapacity // 직전 실제 빈자리 수
+        val realEmptyNumRightBefore = actualDataRightBefore?.emptyNum
+            ?: forecastingBusStopDataRightBefore?.emptyNum
+            ?: busCapacity // 직전 빈자리 수
         val forecastingDemand = busStop.forecastedDemand // 예측 수요
         val forecastedEmptyCount = realEmptyNumRightBefore - forecastingDemand // 이번의 예측 빈자리 수
         val realEmptyCount = realEmptyNumRightBefore - simulatedRealCount // 이번의 실제 빈자리 수를 시뮬레이션 한 값
